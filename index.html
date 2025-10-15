@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BestFit - אתר המתכונים המוביל בישראל | 500+ מתכונים בריאים</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="500+ מתכונים בריאים וטעימים לחיטוב וירידה במשקל. ערכים תזונתיים מדויקים, תפריטים שבועיים ותמיכה מלאה. התחל בחינם עכשיו!">
+    <meta name="keywords" content="מתכונים בריאים, חיטוב, ירידה במשקל, תזונה נכונה, מתכונים בעברית, אוכל בריא, ספורט ותזונה">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family: 'Heebo', sans-serif; }
+        
+        .gradient-text { 
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        
+        .recipe-card { transition: all 0.4s; }
+        .recipe-card:hover { transform: translateY(-12px) scale(1.02); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0, 0, 0, 0.7); 
+            z-index: 9999; 
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        
+        .modal-content { 
+            animation: slideUp 0.4s ease-out; 
+            max-height: 90vh; 
+            overflow-y: auto; 
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .notification { 
+            position: fixed; 
+            top: 20px; 
+            left: 50%; 
+            transform: translateX(-50%) translateY(-100px); 
+            background: white; 
+            padding: 16px 24px; 
+            border-radius: 12px; 
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15); 
+            z-index: 10000; 
+            opacity: 0; 
+            transition: all 0.4s; 
+        }
+        .notification.show { 
+            transform: translateX(-50%) translateY(0); 
+            opacity: 1; 
+        }
+        
+        .quick-filter-btn { 
+            background: #f3f4f6; 
+            color: #374151; 
+            transition: all 0.3s; 
+        }
+        .quick-filter-btn:hover { background: #e5e7eb; }
+        .quick-filter-btn.active { 
+            background: linear-gradient(135deg, #f97316, #ea580c); 
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <div id="notification" class="notification">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-check-circle text-orange-500 text-xl"></i>
+            <span id="notificationText" class="font-semibold"></span>
+        </div>
+    </div>
+
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-dumbbell text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black gradient-text">BestFit</div>
+                        <div class="text-xs text-gray-500">המסע שלך מתחיל כאן</div>
+                    </div>
+                </div>
+                
+                <button onclick="showNotification('ההרשמה תהיה זמינה בקרוב! 🎉')" class="bg-gradient-to-l from-orange-500 to-orange-600 text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-xl transition-all">
+                    הרשמה חינם
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section id="home" class="pt-20 pb-32 bg-gradient-to-br from-orange-50 via-white to-orange-100">
+        <div class="container mx-auto px-4">
+            <div class="max-w-5xl mx-auto text-center">
+                <h1 class="text-5xl md:text-7xl font-black mb-8 leading-tight">
+                    <span class="gradient-text">המסע שלך</span><br>
+                    <span class="text-gray-900">לגוף חלומות</span><br>
+                    <span class="gradient-text">מתחיל כאן</span>
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-gray-600 mb-12">
+                    מתכונים מהממים בעברית, ערכים תזונתיים מדויקים ותפריטים שבועיים<br>
+                    <strong>ללא ויתורים על טעם</strong> 🔥
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#recipes" class="bg-gradient-to-l from-orange-500 to-orange-600 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all">
+                        גלה מתכונים
+                    </a>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-6 max-w-3xl mx-auto mt-20">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <div class="text-4xl font-black gradient-text mb-2">500+</div>
+                        <div class="text-gray-600 font-semibold">מתכונים</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <div class="text-4xl font-black gradient-text mb-2">50K+</div>
+                        <div class="text-gray-600 font-semibold">משתמשים</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <div class="text-4xl font-black gradient-text mb-2">4.9⭐</div>
+                        <div class="text-gray-600 font-semibold">דירוג</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="recipes" class="py-24 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-black mb-6">
+                    <span class="gradient-text">500+ מתכונים</span> מהממים
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    מתכונים שנבחרו בקפידה ונוצרו על ידי שפים ותזונאים מובילים
+                </p>
+            </div>
+            
+            <div class="max-w-6xl mx-auto mb-12">
+                <div class="bg-white p-8 rounded-3xl shadow-xl">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="חפש מתכון..." 
+                        class="w-full px-6 py-4 border-2 border-gray-300 rounded-2xl focus:border-orange-500 focus:outline-none text-lg"
+                        oninput="filterRecipes()"
+                    >
+                    
+                    <div class="flex flex-wrap gap-3 mt-6">
+                        <button onclick="quickFilter('all')" class="quick-filter-btn active px-6 py-2 rounded-full font-bold">
+                            הכל
+                        </button>
+                        <button onclick="quickFilter('breakfast')" class="quick-filter-btn px-6 py-2 rounded-full font-bold">
+                            ארוחת בוקר
+                        </button>
+                        <button onclick="quickFilter('lunch')" class="quick-filter-btn px-6 py-2 rounded-full font-bold">
+                            צהריים
+                        </button>
+                        <button onclick="quickFilter('dinner')" class="quick-filter-btn px-6 py-2 rounded-full font-bold">
+                            ערב
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="recipeGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"></div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="text-3xl font-black text-orange-400 mb-4">BestFit</div>
+            <p class="text-gray-400 mb-6">המסע שלך לגוף בריא מתחיל כאן</p>
+            <div class="mt-6 text-gray-500 text-sm">© 2025 BestFit. כל הזכויות שמורות.</div>
+        </div>
+    </footer>
+
+    <div id="recipeModal" class="modal" onclick="closeRecipeModal(event)">
+        <div class="modal-content bg-white rounded-3xl max-w-4xl w-full mx-4" onclick="event.stopPropagation()">
+            <div id="recipeModalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const recipes = [
+            { id: 1, name: 'סלמון בתנור עם ירקות קלויים', image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800', calories: 420, protein: 38, carbs: 22, fat: 18, prepTime: 35, servings: 2, mealType: 'dinner', description: 'סלמון עסיסי עשיר באומגה 3', ingredients: ['פילה סלמון 200 גרם', 'ברוקולי', 'פלפלים צבעוניים', 'שום 3 שיניים', 'לימון', 'שמן זית 2 כפות'], instructions: ['חממו תנור ל-180 מעלות', 'חתכו ירקות לקוביות', 'ערבבו עם שמן זית ושום', 'צלו 20 דקות', 'הוסיפו סלמון ואפו 15 דקות'] },
+            { id: 2, name: 'שייק חלבון שוקולד בננה', image: 'https://images.unsplash.com/photo-1622484211850-6164781c1f90?w=800', calories: 285, protein: 32, carbs: 28, fat: 6, prepTime: 5, servings: 1, mealType: 'breakfast', description: 'שייק עשיר בחלבון', ingredients: ['אבקת חלבון 30 גרם', 'בננה קפואה', 'חלב שקדים 250 מל', 'קרח', 'קינמון'], instructions: ['שימו הכל בבלנדר', 'טחנו 30 שניות', 'הגישו מיד'] },
+            { id: 3, name: 'חזה עוף ברוטב דבש וסויה', image: 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=800', calories: 380, protein: 42, carbs: 24, fat: 12, prepTime: 25, servings: 2, mealType: 'lunch', description: 'חזה עוף רך ועסיסי', ingredients: ['חזה עוף 200 גרם', 'רוטב סויה 3 כפות', 'דבש 2 כפות', 'שום', 'ג\'ינג\'ר'], instructions: ['חתכו עוף לרצועות', 'טגנו בשמן', 'הוסיפו רוטב', 'בשלו 15 דקות'] }
+        ];
+
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        function renderRecipes() {
+            const grid = document.getElementById('recipeGrid');
+            let filtered = recipes.filter(r => {
+                const matchFilter = currentFilter === 'all' || r.mealType === currentFilter;
+                const matchSearch = r.name.includes(searchQuery) || searchQuery === '';
+                return matchFilter && matchSearch;
+            });
+
+            grid.innerHTML = filtered.map(recipe => `
+                <div class="recipe-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer" onclick="openRecipeModal(${recipe.id})">
+                    <div class="relative h-48 bg-gray-200">
+                        <img src="${recipe.image}" alt="${recipe.name}" class="w-full h-full object-cover">
+                        <div class="absolute top-3 right-3 bg-white px-3 py-1 rounded-full text-sm font-bold">
+                            <i class="fas fa-fire text-orange-500"></i>
+                            ${recipe.calories}
+                        </div>
+                    </div>
+                    <div class="p-5 text-right">
+                        <h3 class="font-bold text-lg mb-2">${recipe.name}</h3>
+                        <p class="text-gray-600 text-sm mb-3">${recipe.description}</p>
+                        <div class="flex justify-between items-center pt-3 border-t">
+                            <span class="text-sm text-gray-500">
+                                <i class="fas fa-clock"></i>
+                                ${recipe.prepTime} דק'
+                            </span>
+                            <span class="text-orange-600 font-bold">${recipe.protein}g חלבון</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterRecipes() {
+            searchQuery = document.getElementById('searchInput').value;
+            renderRecipes();
+        }
+
+        function quickFilter(type) {
+            currentFilter = type;
+            document.querySelectorAll('.quick-filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderRecipes();
+        }
+
+        function openRecipeModal(id) {
+            const recipe = recipes.find(r => r.id === id);
+            if (!recipe) return;
+
+            const content = document.getElementById('recipeModalContent');
+            content.innerHTML = `
+                <div class="relative">
+                    <img src="${recipe.image}" alt="${recipe.name}" class="w-full h-80 object-cover">
+                    <button onclick="closeRecipeModal()" class="absolute top-4 left-4 w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="p-8">
+                    <h2 class="text-4xl font-black mb-4 text-right">${recipe.name}</h2>
+                    <p class="text-gray-600 text-lg mb-6 text-right">${recipe.description}</p>
+                    
+                    <div class="grid grid-cols-4 gap-4 mb-8 bg-orange-50 p-6 rounded-2xl">
+                        <div class="text-center">
+                            <div class="font-bold text-lg">${recipe.calories}</div>
+                            <div class="text-xs text-gray-600">קלוריות</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-bold text-lg">${recipe.protein}g</div>
+                            <div class="text-xs text-gray-600">חלבון</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-bold text-lg">${recipe.carbs}g</div>
+                            <div class="text-xs text-gray-600">פחמימות</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-bold text-lg">${recipe.servings}</div>
+                            <div class="text-xs text-gray-600">מנות</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="text-right">
+                            <h3 class="text-2xl font-black mb-4">מרכיבים</h3>
+                            <ul class="space-y-3">
+                                ${recipe.ingredients.map(ing => `<li class="flex items-start gap-3"><i class="fas fa-check-circle text-orange-500"></i><span>${ing}</span></li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="text-right">
+                            <h3 class="text-2xl font-black mb-4">הוראות הכנה</h3>
+                            <ol class="space-y-3">
+                                ${recipe.instructions.map((inst, i) => `<li class="flex gap-3"><span class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">${i+1}</span><span>${inst}</span></li>`).join('')}
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('recipeModal').classList.add('active');
+        }
+
+        function closeRecipeModal(event) {
+            if (event && event.target.id !== 'recipeModal') return;
+            document.getElementById('recipeModal').classList.remove('active');
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notificationText');
+            text.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        renderRecipes();
+    </script>
+</body>
+</html>
